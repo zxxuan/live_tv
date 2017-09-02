@@ -8,14 +8,15 @@
 
 
     <com.me.livetv.ijk.IjkVideoView
-        android:focusable="false"
         android:id="@+id/ijk"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000"></com.me.livetv.ijk.IjkVideoView>
+        android:background="#000000"
+        android:focusable="false"></com.me.livetv.ijk.IjkVideoView>
 
 
     <TextView
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -24,12 +25,12 @@
         android:textSize="16sp" />
 
 
-
-        <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
-            android:focusable="false"
-            android:id="@+id/list"
-            android:layout_width="258dp"
-            android:layout_height="match_parent"></com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
+    <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
+        android:background="#80000000"
+        android:id="@+id/list"
+        android:layout_width="258dp"
+        android:layout_height="match_parent"
+        android:focusable="false"></com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
 
     <com.open.androidtvwidget.view.MainUpView
         android:id="@+id/mainUpView1"

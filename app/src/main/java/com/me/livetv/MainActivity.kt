@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.KeyEvent
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -79,6 +80,14 @@ class MainActivity : AppCompatActivity() {
                 },{})
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when(keyCode){
+            KeyEvent.KEYCODE_DPAD_LEFT-> {
+                list.requestFocus()
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
     companion object{
         fun startActivity(context: Context){
@@ -94,9 +103,10 @@ class MainActivity : AppCompatActivity() {
 
         ijk.setOnInfoListener(IMediaPlayer.OnInfoListener { mp, what, extra ->
             when (what) {
-                IMediaPlayer.MEDIA_INFO_BUFFERING_START ->{}
+                IMediaPlayer.MEDIA_INFO_BUFFERING_START ->{loading.visibility =View.VISIBLE}
                 IMediaPlayer.MEDIA_INFO_BUFFERING_END -> {
-
+                    loading.visibility = View.GONE
+                    ijk.start()
                 }
                 IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START -> {
                 }
