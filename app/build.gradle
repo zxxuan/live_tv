@@ -7,7 +7,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.me.livetv"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -47,6 +47,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.3'
+    compile project(':androidtvwidget')
 }
 
 repositories {
