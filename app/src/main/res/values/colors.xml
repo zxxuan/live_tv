@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fc6a41</color>
+    <color name="colorPrimaryDark">#fc6a41</color>
+    <color name="colorAccent">#fc6a41</color>
+
+    <color name="all_text_hint">#d0cfcf</color>
+    <color name="all_sub_title">#6d6d6d</color>
+    <color name="divider_line">#d6dce3</color>
+    <color name="color_primary_pressed">#b3f36036</color>
+    <!--login-->
+    <color name="login_text_white">#fef9f1</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources>

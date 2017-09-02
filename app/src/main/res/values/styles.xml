@@ -1,0 +1,44 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="all_edit_style">
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:paddingLeft">42dp</item>
+        <item name="android:paddingRight">42dp</item>
+        <item name="android:textColorHint">@color/all_text_hint</item>
+        <item name="android:textSize">@dimen/textsize_login_normal</item>
+        <item name="android:drawablePadding">10dp</item>
+    </style>
+
+    <style name="all_text_btn_style">
+        <item name="android:layout_width">@dimen/width_login_btnbackground</item>
+        <item name="android:layout_height">@dimen/height_login_btnbackground</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/login_text_white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/btn_main_bg_selector</item>
+        <item name="android:textSize">@dimen/textsize_login_homepage</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+</resources>
