@@ -1,8 +1,10 @@
 package com.me.livetv
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -21,10 +23,10 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
 
 class MainActivity : AppCompatActivity() {
 
-    private var mRecyclerViewBridge: RecyclerViewBridge?=null
+    private var mRecyclerViewBridge: RecyclerViewBridge? = null
     private var currentPosition: Int = 0
-    private  var currentView: View? = null
-    var lessons: LiveList?=null
+    private var currentView: View? = null
+    var lessons: LiveList? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         mRecyclerViewBridge = mainUpView1.effectBridge as RecyclerViewBridge
         mRecyclerViewBridge?.setUpRectResource(R.drawable.test_rectangle)
 
-        list.setOnItemListener(object :RecyclerViewTV.OnItemListener{
+        list.setOnItemListener(object : RecyclerViewTV.OnItemListener {
             override fun onItemPreSelected(parent: RecyclerViewTV?, itemView: View?, position: Int) {
                 // 传入 itemView也可以, 自己保存的 oldView也可以.
                 mRecyclerViewBridge?.setUnFocusView(itemView)
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             override fun onItemSelected(parent: RecyclerViewTV?, itemView: View?, position: Int) {
                 mRecyclerViewBridge?.setFocusView(itemView, 1.0f)
                 oldView = itemView
-                currentPosition= position
+                currentPosition = position
                 currentView = itemView
             }
 
@@ -62,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             // 测试.
             mRecyclerViewBridge?.setFocusView(itemView, oldView, 1.0f)
             oldView = itemView
-            ijk.setVideoPath( lessons?.lessons?.get(position)?.playurl)
+            ijk.setVideoPath(lessons?.lessons?.get(position)?.playurl)
             ijk.start()
         })
         list.requestFocus()
@@ -74,43 +76,76 @@ class MainActivity : AppCompatActivity() {
     private fun loadData() {
         ApiManager.getLiveListApi().loginResponseData
                 .compose(RxJavaUtils.normalSchedulers<LiveList>())
-                .subscribe({lessons->
+                .subscribe({ lessons ->
                     this.lessons = lessons
-                    list.adapter = object : BaseQuickAdapter<LiveList.LessonsEntity>(R.layout.item_live,lessons.lessons){
+                    list.adapter = object : BaseQuickAdapter<LiveList.LessonsEntity>(R.layout.item_live, lessons.lessons) {
                         override fun convert(p0: BaseViewHolder?, p1: LiveList.LessonsEntity?) {
-                            p0?.setText(R.id.lesson_name,p1?.courseName)
+                            p0?.setText(R.id.lesson_name, p1?.courseName)
                         }
 
                     }
-                },{})
+                }, {})
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        when(keyCode){
-            KeyEvent.KEYCODE_DPAD_LEFT-> {
-                if (list.visibility == View.VISIBLE){
-                    list.visibility = View.INVISIBLE
-                    mainUpView1.visibility = View.INVISIBLE
-                }
+        when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+
+                startOut()
+                //mainUpView1.visibility = View.INVISIBLE
+
                 return true
             }
-            KeyEvent.KEYCODE_DPAD_RIGHT->{
-                if (list.visibility == View.INVISIBLE){
-                    list.visibility = View.VISIBLE
-                    mainUpView1.visibility = View.VISIBLE
-                }
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                startIn()
+                // mainUpView1.visibility = View.VISIBLE
+
                 return true
             }
-            KeyEvent.KEYCODE_BACK-> {
+            KeyEvent.KEYCODE_BACK -> {
                 mBackPressed = true
+                exit()
                 return true
             }
         }
         return super.onKeyDown(keyCode, event)
     }
 
-    companion object{
-        fun startActivity(context: Context){
+    fun exit() {
+        AlertDialog.Builder(this).setCancelable(false).setMessage("确定退出？").setNegativeButton("取消") { dialog, which -> dialog.dismiss()}
+                .setPositiveButton("确定",{
+                    dialog,which->
+                    dialog.dismiss()
+                    finish()
+                })
+                .create().show()
+
+    }
+
+    fun startIn() {
+        val ofInt = ValueAnimator.ofFloat((-list.measuredWidth).toFloat(), 0f)
+        ofInt.duration = 1000
+        ofInt.addUpdateListener({
+            animation ->
+            list.translationX = animation.animatedValue as Float
+            mainUpView1.translationX = animation.animatedValue as Float
+        })
+        ofInt.start()
+    }
+
+    fun startOut() {
+        val ofInt = ValueAnimator.ofFloat(0f, (-list.measuredWidth).toFloat())
+        ofInt.duration = 1000
+        ofInt.addUpdateListener({
+            animation ->
+            list.translationX = animation.animatedValue as Float
+            mainUpView1.translationX = animation.animatedValue as Float
+        })
+        ofInt.start()
+    }
+
+    companion object {
+        fun startActivity(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
             context.startActivity(intent)
         }
@@ -123,7 +158,9 @@ class MainActivity : AppCompatActivity() {
 
         ijk.setOnInfoListener(IMediaPlayer.OnInfoListener { mp, what, extra ->
             when (what) {
-                IMediaPlayer.MEDIA_INFO_BUFFERING_START ->{loading.visibility =View.VISIBLE}
+                IMediaPlayer.MEDIA_INFO_BUFFERING_START -> {
+                    loading.visibility = View.VISIBLE
+                }
                 IMediaPlayer.MEDIA_INFO_BUFFERING_END -> {
                     loading.visibility = View.GONE
                     ijk.start()
@@ -141,7 +178,7 @@ class MainActivity : AppCompatActivity() {
             ToastUtil.showMessage("视频加载失败")
             true
         })
-        ijk.setOnCompletionListener(IMediaPlayer.OnCompletionListener {  })
+        ijk.setOnCompletionListener(IMediaPlayer.OnCompletionListener { })
 
 
     }
