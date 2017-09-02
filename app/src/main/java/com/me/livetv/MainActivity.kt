@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             ijk.setVideoPath( lessons?.lessons?.get(position)?.playurl)
             ijk.start()
         })
+        list.requestFocus()
     }
 
     private var oldView: View? = null
@@ -83,7 +84,20 @@ class MainActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when(keyCode){
             KeyEvent.KEYCODE_DPAD_LEFT-> {
-                list.requestFocus()
+                if (list.visibility == View.VISIBLE){
+                    list.visibility = View.GONE
+                }
+                return true
+            }
+            KeyEvent.KEYCODE_DPAD_RIGHT->{
+                if (list.visibility == View.GONE){
+                    list.visibility = View.VISIBLE
+                }
+                return true
+            }
+            KeyEvent.KEYCODE_BACK-> {
+                mBackPressed = true
+                return true
             }
         }
         return super.onKeyDown(keyCode, event)
@@ -124,5 +138,18 @@ class MainActivity : AppCompatActivity() {
         ijk.setOnCompletionListener(IMediaPlayer.OnCompletionListener {  })
 
 
+    }
+
+    private var mBackPressed: Boolean = false
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mBackPressed || !ijk.isBackgroundPlayEnabled) {
+            ijk.stopPlayback()
+            ijk.release(true)
+            ijk.stopBackgroundPlay()
+        } else {
+            ijk.enterBackground()
+        }
+        IjkMediaPlayer.native_profileEnd()
     }
 }
