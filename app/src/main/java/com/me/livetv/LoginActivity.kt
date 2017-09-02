@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
         edittext_login_username.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
-                mainUpView1.setFocusView(v,1.2f)
+                mainUpView1.setFocusView(v,1.1f)
             }else{
                 mainUpView1.setFocusView(v,1.0f)
             }
@@ -40,29 +40,34 @@ class LoginActivity : AppCompatActivity() {
         }
         edittext_login_password.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
-                mainUpView1.setFocusView(v,1.2f)
+                mainUpView1.setFocusView(v,1.1f)
             }else{
                 mainUpView1.setFocusView(v,1.0f)
             }
         }
         textView_login.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
-                mainUpView1.setFocusView(v,1.2f)
+                mainUpView1.setFocusView(v,1.1f)
             }else{
                 mainUpView1.setFocusView(v,1.0f)
             }
         }
+        edittext_login_username.setText(PrefUtils.getString(this,"name",""))
+        edittext_login_password.setText(PrefUtils.getString(this,"password",""))
     }
 
     private fun login() {
         if (TextUtils.isEmpty(edittext_login_username.text.toString())) return
         if (TextUtils.isEmpty(edittext_login_password.text.toString())) return
+        PrefUtils.putString(this,"name",edittext_login_username.text.toString())
+        PrefUtils.putString(this,"password",edittext_login_password.text.toString())
         val authorization = OAuthUtils.getBasicAuthorizationHeader(Contants.CLIENT_ID, Contants.CLIENT_SECRET)
         subscribe = ApiManager.getLoginApi().getLoginResponseData(authorization, edittext_login_username.text.toString(), edittext_login_password.text.toString(), "password")
                 .compose(RxJavaUtils.normalSchedulers<LoginResponseData>())
                 .subscribe({loginResponseData->
                     PrefUtils.putString(this, "access_token", loginResponseData.refresh_token)
                     MainActivity.startActivity(this)
+                    finish()
                 }, {
                     ToastUtil.showMessage("登录失败")
                 })
