@@ -6,4 +6,8 @@
     <dimen name="width_login_btnbackground">270dp</dimen>
     <dimen name="height_login_btnbackground">50dp</dimen>
     <dimen name="textsize_login_homepage">16sp</dimen>
+
+    <dimen name="w_45">45.0px</dimen>
+    <dimen name="w_40">40.0px</dimen>
+    <dimen name="h_40">40.0px</dimen>
 </resources>

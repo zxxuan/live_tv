@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/login_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -56,6 +57,7 @@
 
 
     <Button
+        android:focusable="true"
         android:id="@+id/textView_login"
         style="@style/all_text_btn_style"
         android:layout_marginTop="-25dp"
@@ -79,6 +81,12 @@
 
 
     </LinearLayout>
+
+    <com.open.androidtvwidget.view.MainUpView
+        android:id="@+id/mainUpView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:upImageRes="@drawable/test_rectangle" />
 
 </LinearLayout>
 

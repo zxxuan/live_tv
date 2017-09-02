@@ -3,22 +3,54 @@ package com.me.livetv
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.view.View
 import com.me.livetv.domain.LoginResponseData
 import com.me.livetv.utils.OAuthUtils
 import com.me.livetv.utils.PrefUtils
 import com.me.livetv.utils.RxJavaUtils
 import com.me.livetv.utils.ToastUtil
+import com.open.androidtvwidget.bridge.OpenEffectBridge
 import kotlinx.android.synthetic.main.activity_login.*
 import rx.Subscription
 
 class LoginActivity : AppCompatActivity() {
 
     var subscribe: Subscription?=null
+    lateinit var  mOpenEffectBridge: OpenEffectBridge
+    private var mOldFocus: View? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         textView_login.setOnClickListener {
            login()
+        }
+
+        mOpenEffectBridge = mainUpView1.effectBridge as OpenEffectBridge
+        mainUpView1.setUpRectResource(R.drawable.test_rectangle) // 设置移动边框的图片.
+        mainUpView1.setShadowResource(R.drawable.item_shadow)
+
+        edittext_login_username.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                mainUpView1.setFocusView(v,1.2f)
+            }else{
+                mainUpView1.setFocusView(v,1.0f)
+            }
+
+        }
+        edittext_login_password.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                mainUpView1.setFocusView(v,1.2f)
+            }else{
+                mainUpView1.setFocusView(v,1.0f)
+            }
+        }
+        textView_login.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                mainUpView1.setFocusView(v,1.2f)
+            }else{
+                mainUpView1.setFocusView(v,1.0f)
+            }
         }
     }
 
