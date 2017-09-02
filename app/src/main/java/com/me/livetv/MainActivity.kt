@@ -22,6 +22,8 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
 class MainActivity : AppCompatActivity() {
 
     private var mRecyclerViewBridge: RecyclerViewBridge?=null
+    private var currentPosition: Int = 0
+    private  var currentView: View? = null
     var lessons: LiveList?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,8 @@ class MainActivity : AppCompatActivity() {
             override fun onItemSelected(parent: RecyclerViewTV?, itemView: View?, position: Int) {
                 mRecyclerViewBridge?.setFocusView(itemView, 1.0f)
                 oldView = itemView
+                currentPosition= position
+                currentView = itemView
             }
 
             override fun onReviseFocusFollow(parent: RecyclerViewTV?, itemView: View?, position: Int) {
@@ -85,13 +89,15 @@ class MainActivity : AppCompatActivity() {
         when(keyCode){
             KeyEvent.KEYCODE_DPAD_LEFT-> {
                 if (list.visibility == View.VISIBLE){
-                    list.visibility = View.GONE
+                    list.visibility = View.INVISIBLE
+                    mainUpView1.visibility = View.INVISIBLE
                 }
                 return true
             }
             KeyEvent.KEYCODE_DPAD_RIGHT->{
-                if (list.visibility == View.GONE){
+                if (list.visibility == View.INVISIBLE){
                     list.visibility = View.VISIBLE
+                    mainUpView1.visibility = View.VISIBLE
                 }
                 return true
             }
