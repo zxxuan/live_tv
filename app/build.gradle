@@ -23,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets.main {
+        jniLibs.srcDirs "src/libs"
+        jni.srcDirs = []
+    }
 }
 
 dependencies {
@@ -40,14 +44,15 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.4.5.1'
+/*    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.4.5.1'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.4.5.1'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.4.5.1'
-    compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.4.5.1'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.4.5.1'*/
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.3'
     compile project(':androidtvwidget')
+    compile project(':ijkplayer-java')
 }
 
 repositories {

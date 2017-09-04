@@ -4,10 +4,14 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     tools:context="com.me.livetv.MainActivity">
 
 
     <com.me.livetv.ijk.IjkVideoView
+        android:focusableInTouchMode="false"
+        android:clickable="false"
+        android:touchscreenBlocksFocus="true"
         android:id="@+id/ijk"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,16 +29,13 @@
         android:textSize="16sp" />
 
 
-    <com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
+    <android.support.v7.widget.RecyclerView
         android:background="#80000000"
         android:id="@+id/list"
         android:layout_width="258dp"
         android:layout_height="match_parent"
-        android:focusable="false"></com.open.androidtvwidget.leanback.recycle.RecyclerViewTV>
+        android:focusable="true"></android.support.v7.widget.RecyclerView>
 
-    <com.open.androidtvwidget.view.MainUpView
-        android:id="@+id/mainUpView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
 
 </RelativeLayout>

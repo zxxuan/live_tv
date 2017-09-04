@@ -39,11 +39,12 @@ import android.widget.MediaController;
 import android.widget.TableLayout;
 
 import com.me.livetv.R;
-
+import com.me.livetv.utils.ApiUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -115,6 +116,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private int mVideoSarDen;
 
     private InfoHudViewHolder mHudViewHolder;
+
 
     public IjkVideoView(Context context) {
         super(context);
@@ -256,6 +258,11 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private void setVideoURI(Uri uri, Map<String, String> headers) {
         mUri = uri;
         mHeaders = headers;
+        if (mHeaders == null ){
+            mHeaders= new HashMap<>();
+        }
+
+        mHeaders.put("Authorization", ApiUtils.getAuthorization(mAppContext));
         mSeekWhenPrepared = 0;
         openVideo();
         requestLayout();
@@ -827,7 +834,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 onSlideUpDown=false;
                 break;
         }
-        return true;
+        return false;
     }
 
     private OnSlideListener mOnSlideListener;

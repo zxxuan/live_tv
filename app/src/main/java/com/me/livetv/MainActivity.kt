@@ -14,63 +14,25 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.me.livetv.domain.LiveList
 import com.me.livetv.utils.RxJavaUtils
-import com.me.livetv.utils.ToastUtil
-import com.open.androidtvwidget.bridge.RecyclerViewBridge
-import com.open.androidtvwidget.leanback.recycle.RecyclerViewTV
 import kotlinx.android.synthetic.main.activity_main.*
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 
 class MainActivity : AppCompatActivity() {
 
-    private var mRecyclerViewBridge: RecyclerViewBridge? = null
-    private var currentPosition: Int = 0
-    private var currentView: View? = null
     var lessons: LiveList? = null
+    var url: String?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         list.layoutManager = LinearLayoutManager(this) as RecyclerView.LayoutManager?
         list.isFocusable = false
         loadData()
         initIjk()
-        mainUpView1.effectBridge = RecyclerViewBridge()
-        // 注意这里，需要使用 RecyclerViewBridge 的移动边框 Bridge.
-        mRecyclerViewBridge = mainUpView1.effectBridge as RecyclerViewBridge
-        mRecyclerViewBridge?.setUpRectResource(R.drawable.test_rectangle)
 
-        list.setOnItemListener(object : RecyclerViewTV.OnItemListener {
-            override fun onItemPreSelected(parent: RecyclerViewTV?, itemView: View?, position: Int) {
-                // 传入 itemView也可以, 自己保存的 oldView也可以.
-                mRecyclerViewBridge?.setUnFocusView(itemView)
-            }
-
-            override fun onItemSelected(parent: RecyclerViewTV?, itemView: View?, position: Int) {
-                mRecyclerViewBridge?.setFocusView(itemView, 1.0f)
-                oldView = itemView
-                currentPosition = position
-                currentView = itemView
-            }
-
-            override fun onReviseFocusFollow(parent: RecyclerViewTV?, itemView: View?, position: Int) {
-                mRecyclerViewBridge?.setFocusView(itemView, 1.0f)
-                oldView = itemView
-            }
-
-        })
-
-
-        list.setOnItemClickListener({ parent, itemView, position ->
-            // 测试.
-            mRecyclerViewBridge?.setFocusView(itemView, oldView, 1.0f)
-            oldView = itemView
-            ijk.setVideoPath(lessons?.lessons?.get(position)?.playurl)
-            ijk.start()
-        })
         list.requestFocus()
     }
-
-    private var oldView: View? = null
 
 
     private fun loadData() {
@@ -78,28 +40,55 @@ class MainActivity : AppCompatActivity() {
                 .compose(RxJavaUtils.normalSchedulers<LiveList>())
                 .subscribe({ lessons ->
                     this.lessons = lessons
+
+                    //ijk.setVideoPath("http://hd.yinyuetai.com/uploads/videos/common/1B43015E3E1C901EACC99453AE8A12C1.mp4?sc=b15ed059e02aa94d")
+                    url = lessons.lessons[0].playurl
+                    ijk.setVideoPath("rtsp://192.168.1.170:8554/mv")
+                    ijk.start()
+
                     list.adapter = object : BaseQuickAdapter<LiveList.LessonsEntity>(R.layout.item_live, lessons.lessons) {
                         override fun convert(p0: BaseViewHolder?, p1: LiveList.LessonsEntity?) {
+                            if (p0?.layoutPosition == currentFocusPosition){
+                                p0?.itemView?.requestFocus()
+                            }
                             p0?.setText(R.id.lesson_name, p1?.courseName)
+                            p0?.itemView?.setOnClickListener {
+                                //ijk.setVideoPath(p1?.playurl)
+                                loading.visibility = View.VISIBLE
+                                ijk.visibility = View.GONE
+                                url = p1?.playurl
+                                ijk.setVideoPath("rtsp://192.168.1.170:8554/mv")
+                                ijk.start()
+                            }
+                            p0?.itemView?.setOnFocusChangeListener { v, hasFocus ->
+                                if (hasFocus){
+                                    currentFocusPosition = p0?.layoutPosition
+                                    currentFocusView = v
+                                }
+                            }
                         }
 
                     }
                 }, {})
     }
 
+    private var isMenuShow: Boolean = true
+    private var currentFocusPosition: Int = 0
+    private var currentFocusView: View? = null
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-
-                startOut()
-                //mainUpView1.visibility = View.INVISIBLE
-
+                if (isMenuShow){
+                    isMenuShow = false
+                    startOut()
+                }
                 return true
             }
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                startIn()
-                // mainUpView1.visibility = View.VISIBLE
-
+                if (!isMenuShow){
+                    isMenuShow = true
+                    startIn()
+                }
                 return true
             }
             KeyEvent.KEYCODE_BACK -> {
@@ -124,22 +113,20 @@ class MainActivity : AppCompatActivity() {
 
     fun startIn() {
         val ofInt = ValueAnimator.ofFloat((-list.measuredWidth).toFloat(), 0f)
-        ofInt.duration = 1000
+        ofInt.duration = 600
         ofInt.addUpdateListener({
             animation ->
             list.translationX = animation.animatedValue as Float
-            mainUpView1.translationX = animation.animatedValue as Float
         })
         ofInt.start()
     }
 
     fun startOut() {
         val ofInt = ValueAnimator.ofFloat(0f, (-list.measuredWidth).toFloat())
-        ofInt.duration = 1000
+        ofInt.duration = 600
         ofInt.addUpdateListener({
             animation ->
             list.translationX = animation.animatedValue as Float
-            mainUpView1.translationX = animation.animatedValue as Float
         })
         ofInt.start()
     }
@@ -156,7 +143,7 @@ class MainActivity : AppCompatActivity() {
         IjkMediaPlayer.native_profileBegin("libijkplayer.so")
 
 
-        ijk.setOnInfoListener(IMediaPlayer.OnInfoListener { mp, what, extra ->
+        ijk.setOnInfoListener({ mp, what, extra ->
             when (what) {
                 IMediaPlayer.MEDIA_INFO_BUFFERING_START -> {
                     loading.visibility = View.VISIBLE
@@ -167,18 +154,32 @@ class MainActivity : AppCompatActivity() {
                 }
                 IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START -> {
                     loading.visibility = View.GONE
+                    ijk.visibility = View.VISIBLE
                 }
             }
             true
         })
-        ijk.setOnPreparedListener(IMediaPlayer.OnPreparedListener {
-
+        ijk.setOnPreparedListener({
+            ijk.start()
         })
         ijk.setOnErrorListener({ mp, what, extra ->
-            ToastUtil.showMessage("视频加载失败")
+            val create = AlertDialog.Builder(this).setCancelable(false).setMessage("加载失败？").setNegativeButton("取消") { dialog, which -> dialog.dismiss() }
+                    .setPositiveButton("重试", {
+                        dialog, which ->
+                        dialog.dismiss()
+                        ijk.setVideoPath(url)
+                        ijk.start()
+                    })
+                    .create()
+            create.show()
+            create.setOnDismissListener {
+                currentFocusView?.requestFocus()
+            }
             true
         })
-        ijk.setOnCompletionListener(IMediaPlayer.OnCompletionListener { })
+        ijk.setOnCompletionListener({
+
+        })
 
 
     }

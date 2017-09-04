@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
     <style name="all_edit_style">
         <item name="android:maxLines">1</item>
         <item name="android:background">@null</item>
