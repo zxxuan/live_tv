@@ -41,9 +41,9 @@ class MainActivity : AppCompatActivity() {
                 .subscribe({ lessons ->
                     this.lessons = lessons
 
-                    //ijk.setVideoPath("http://hd.yinyuetai.com/uploads/videos/common/1B43015E3E1C901EACC99453AE8A12C1.mp4?sc=b15ed059e02aa94d")
+                    ijk.setVideoPath("http://hd.yinyuetai.com/uploads/videos/common/1B43015E3E1C901EACC99453AE8A12C1.mp4?sc=b15ed059e02aa94d")
                     url = lessons.lessons[0].playurl
-                    ijk.setVideoPath("rtsp://192.168.1.170:8554/mv")
+                    //ijk.setVideoPath("rtsp://admin:admin@59.53.175.163:14554/snl/live/1/2")
                     ijk.start()
 
                     list.adapter = object : BaseQuickAdapter<LiveList.LessonsEntity>(R.layout.item_live, lessons.lessons) {
@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                                 ijk.visibility = View.GONE
                                 url = p1?.playurl
                                 ijk.setVideoPath("rtsp://192.168.1.170:8554/mv")
+                                //ijk.setVideoPath("http://hd.yinyuetai.com/uploads/videos/common/1B43015E3E1C901EACC99453AE8A12C1.mp4?sc=b15ed059e02aa94d")
                                 ijk.start()
                             }
                             p0?.itemView?.setOnFocusChangeListener { v, hasFocus ->

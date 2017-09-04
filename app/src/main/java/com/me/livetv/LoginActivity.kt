@@ -29,11 +29,11 @@ class LoginActivity : AppCompatActivity() {
 
         mOpenEffectBridge = mainUpView1.effectBridge as OpenEffectBridge
         mainUpView1.setUpRectResource(R.drawable.test_rectangle) // 设置移动边框的图片.
-        mainUpView1.setShadowResource(R.drawable.item_shadow)
+        //mainUpView1.setShadowResource(R.drawable.item_shadow)
 
         edittext_login_username.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
-                mainUpView1.setFocusView(v,1.1f)
+                mainUpView1.setFocusView(v,1.05f)
             }else{
                 mainUpView1.setFocusView(v,1.0f)
             }
@@ -41,14 +41,14 @@ class LoginActivity : AppCompatActivity() {
         }
         edittext_login_password.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
-                mainUpView1.setFocusView(v,1.1f)
+                mainUpView1.setFocusView(v,1.05f)
             }else{
                 mainUpView1.setFocusView(v,1.0f)
             }
         }
         textView_login.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
-                mainUpView1.setFocusView(v,1.1f)
+                mainUpView1.setFocusView(v,1.05f)
             }else{
                 mainUpView1.setFocusView(v,1.0f)
             }
